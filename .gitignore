@@ -1,0 +1,4 @@
+qmeshi/local_settings.py
+db.sqlite3
+__pycache__
+.DS_Store

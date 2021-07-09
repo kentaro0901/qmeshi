@@ -1,0 +1,1 @@
+web: gunicorn qmeshi.wsgi --log-file -
