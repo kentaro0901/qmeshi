@@ -1,9 +1,18 @@
 from django.db import models
 
-
 # データベース用クラス
-# Create your models here.
 
+class Menu(models.Model):
+    """メニュー"""
+    start_date = models.DateField()
+    end_date = models.DateField()
+    menu = models.TextField('メニュー', max_length=1024, blank=True)
+
+    def __str__(self):
+        return self.menu
+
+
+# データベース消すの若干手間なので最後にまとめてやる
 class Book(models.Model):
     """書籍"""
     name = models.CharField('書籍名', max_length=255)
