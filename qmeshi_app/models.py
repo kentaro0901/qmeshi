@@ -2,22 +2,40 @@ from django.db import models
 
 # データベース用クラス
 
-class Menu(models.Model):
-    """メニュー"""
-    start_date = models.DateField()
-    end_date = models.DateField()
-    menu = models.TextField('メニュー', max_length=1024, blank=True)
+class Tag(models.Model):
+    """種類"""
+    name = models.CharField('種類', max_length=32)
 
     def __str__(self):
-        return self.menu
+        return self.name
 
 
 class Item(models.Model):
     """アイテム"""
-    name = models.CharField('アイテム', max_length=255)
+    tag = models.ForeignKey(Tag, verbose_name='種類', related_name='tag', on_delete=models.CASCADE, default=1)
+    name = models.CharField('アイテム', max_length=64)
 
     def __str__(self):
         return self.name
+
+
+class Cafeteria(models.Model):
+    """食堂"""
+    name = models.CharField('食堂名', max_length=32)
+
+    def __str__(self):
+        return self.name
+
+
+class Menu(models.Model):
+    """メニュー"""
+    cafeteria = models.ForeignKey(Cafeteria, verbose_name='食堂', related_name='cafeteria', on_delete=models.CASCADE)
+    start_date = models.DateField()
+    end_date = models.DateField()
+    item = models.ForeignKey(Item, verbose_name='アイテム', related_name='item', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.item.name
 
 
 class Impression(models.Model):
@@ -29,12 +47,7 @@ class Impression(models.Model):
         return self.comment
 
 
-class Cafeteria(models.Model):
-    """食堂"""
-    name = models.CharField('食堂名', max_length=255)
 
-    def __str__(self):
-        return self.name
 
 
 # データベース消すの若干手間なので最後にまとめてやる

@@ -10,12 +10,11 @@ from bs4 import BeautifulSoup
 import django
 django.setup()
 
-from qmeshi_app.models import Menu
+from qmeshi_app.models import Menu, Cafeteria, Item, Tag
 
 
 new_menues_df = pd.read_html('http://www.coop.kyushu-u.ac.jp/shokudou/month_menu.html', flavor='bs4')
-main = 3
-menu_df = new_menues_df[main]
+menu_df = new_menues_df[3] #とりあえずメイン
 today = datetime.date.today()
 
 for i in menu_df:
@@ -41,9 +40,12 @@ for i in menu_df:
     start_date = datetime.date(s_year, s_month, s_day)
     end_date = datetime.date(e_year, e_month, e_day)
 
-    menu_str = ''
-    for menu in menu_df[i][2:].dropna().drop_duplicates():
-        menu_str += f'{menu}\n'
-
-    new_menu = Menu(start_date=start_date, end_date=end_date, menu=menu_str)
-    new_menu.save()
+    for menu in menu_df[[0,i]][2:].dropna(how='any').iterrows():
+        cafeteria = Cafeteria.objects.get(id=1) #メイン
+        tag = menu[1][0].replace('　', ' ').strip()
+        menu = menu[1][i].replace('　', ' ').strip()
+        for m in menu.split('/'): #A/Bを分離
+            tag, _ = Tag.objects.get_or_create(name=tag)
+            item, _ = Item.objects.get_or_create(tag=tag, name=m)
+            new_menu = Menu(cafeteria=cafeteria, start_date=start_date, end_date=end_date, item=item)
+            new_menu.save()

@@ -6,36 +6,46 @@
 <h4 class="mt-4 border-bottom">{{ date }}のメニュー</h4>
 <ul class="nav nav-tabs" id="myTab" role="tablist">
     <li class="nav-item" role="presentation">
-        <a class="nav-link active" id="home-tab" data-bs-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">メイン</a>
+        <a class="nav-link active" id="main-tab" data-bs-toggle="tab" href="#main" role="tab" aria-controls="main" aria-selected="true">メイン</a>
     </li>
     <li class="nav-item" role="presentation">
-        <a class="nav-link" id="profile-tab" data-bs-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">クアシス</a>
+        <a class="nav-link" id="quasis-tab" data-bs-toggle="tab" href="#quasis" role="tab" aria-controls="quasis" aria-selected="false">クアシス</a>
     </li>
     <li class="nav-item" role="presentation">
-        <a class="nav-link" id="contact-tab" data-bs-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">地下食堂</a>
+        <a class="nav-link" id="dining-tab" data-bs-toggle="tab" href="#dining" role="tab" aria-controls="dining" aria-selected="false">地下食堂</a>
     </li>
+    <li class="nav-item" role="presentation">
+      <a class="nav-link" id="ecafe-tab" data-bs-toggle="tab" href="#ecafe" role="tab" aria-controls="ecafe" aria-selected="false">E-Cafe</a>
+  </li>
 </ul>
 <div class="tab-content" id="myTabContent">
-    <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+    <div class="tab-pane fade show active" id="main" role="tabpanel" aria-labelledby="main-tab">
         <table class="table table-striped table-bordered">
             <thead>
               <tr>
-                <th scope="col">メインダイニング</th>
+                <th scope="col">種類</th>
+                <th scope="col">メニュー</th>
+                <th scope="col">レビュー</th>
               </tr>
             </thead>
             <tbody>
               {% for menu in menues %}
               <tr>
-                <td>{{ menu }}</td>
+                <td>{{ menu.item.tag.name }}</td>
+                <td>{{ menu.item.name }}</td>
+                <td>
+                  <a href="{% url 'qmeshi_app:impression_list' item_id=menu.item.id %}" class="btn btn-outline-info btn-sm">レビュー</a>
+                </td>
               </tr>
               {% endfor %}
             </tbody>
         </table>
     </div>
-    <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">...</div>
-    <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">...</div>
+    <div class="tab-pane fade" id="quasis" role="tabpanel" aria-labelledby="quasis-tab">...</div>
+    <div class="tab-pane fade" id="dining" role="tabpanel" aria-labelledby="dining-tab">...</div>
+    <div class="tab-pane fade" id="ecafe" role="tabpanel" aria-labelledby="ecafe-tab">...</div>
 </div>
-<a href="{% url 'qmeshi_app:item_list' %}" class="btn btn-secondary btn-sm">アイテム一覧へ</a>
+<a href="{% url 'qmeshi_app:item_list' %}" class="btn btn-secondary btn-sm">メニュー一覧へ</a>
 
 
 {% endblock content %}

@@ -46,7 +46,8 @@
     </nav>
     {% endif %}
 
-    <a href="{% url 'qmeshi_app:item_list' %}" class="btn btn-secondary btn-sm">戻る</a>
+    <a href="{% url 'qmeshi_app:menu_list' %}" class="btn btn-secondary btn-sm">今日のメニューへ</a>
+    <a href="{% url 'qmeshi_app:item_list' %}" class="btn btn-secondary btn-sm">メニュー一覧へ</a>
 {% endblock content %}
 
 {% block extra_js %}

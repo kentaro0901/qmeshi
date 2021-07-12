@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 #from django.http import HttpResponse
 from django.views.generic.list import ListView
 
-from qmeshi_app.models import Menu, Item, Impression
+from qmeshi_app.models import Cafeteria, Menu, Item, Impression
 from qmeshi_app.forms import ImpressionForm
 
 import datetime
@@ -12,16 +12,15 @@ def menu_list(request):
     today = datetime.date.today()
     weekdays = ['月', '火', '水' , '木', '金', '土', '日']
     date = f'{today.strftime("%m月%d日")}（{weekdays[today.weekday()]}）'
-    menues = Menu.objects.all().filter(start_date__lte=today, end_date__gte=today)
-    menu_items = []
-    for menu in menues:
-        menu_items.extend(menu.menu.split('\n'))
-    return render(request,'qmeshi_app/menu_list.html', {'date':date, 'menues':menu_items})
+
+    cafeteria = Cafeteria.objects.get(id=1) #メイン
+    menues = Menu.objects.all().filter(cafeteria=cafeteria, start_date__lte=today, end_date__gte=today)
+    return render(request,'qmeshi_app/menu_list.html', {'date':date, 'menues':menues})
 
 
 def item_list(request):
     """アイテム一覧"""
-    items = Item.objects.all().order_by('id')
+    items = Item.objects.all().order_by('name')
     return render(request, 'qmeshi_app/item_list.html',  {'items': items})         
 
 
