@@ -1,6 +1,9 @@
 from django.db import models
 
 # データベース用クラス
+# パラメータの追加は慎重に（特にnon-nullableの追加時とか）
+# CASCADE 親が消えたら子も消す
+# PROTECT 削除不可
 
 class Tag(models.Model):
     """種類"""
@@ -22,6 +25,7 @@ class Item(models.Model):
 class Cafeteria(models.Model):
     """食堂"""
     name = models.CharField('食堂名', max_length=32)
+    short_name = models.CharField('略記', max_length=16, null=True)
 
     def __str__(self):
         return self.name

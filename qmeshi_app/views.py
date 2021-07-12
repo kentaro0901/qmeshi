@@ -15,6 +15,8 @@ def menu_list(request):
 
     cafeteria = Cafeteria.objects.get(id=1) #メイン
     menues = Menu.objects.all().filter(cafeteria=cafeteria, start_date__lte=today, end_date__gte=today)
+
+    #cafeterias = Cafeteria.objects.all().order_by('id')
     return render(request,'qmeshi_app/menu_list.html', {'date':date, 'menues':menues})
 
 
