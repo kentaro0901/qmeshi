@@ -6,35 +6,65 @@
     <h4 class="mt-4 border-bottom">メニュー一覧</h4>
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
-        <a class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Home</a>
-        <a class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Profile</a>
-        <a class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">Contact</a>
+        {% for tag in tags %}
+          {% if tag.id == 1 %}
+          <a class="nav-link active" id="nav-{{ tag.short_name }}-tab" data-bs-toggle="tab" href="#nav-{{ tag.short_name }}" role="tab" aria-controls="nav-{{ tag.short_name }}" aria-selected="true">{{ tag.name }}</a>
+          {% else %}
+          <a class="nav-link" id="nav-{{ tag.short_name }}-tab" data-bs-toggle="tab" href="#nav-{{ tag.short_name }}" role="tab" aria-controls="nav-{{ tag.short_name }}" aria-selected="false">{{ tag.name }}</a>
+          {% endif %}
+        {% endfor %}
       </div>
     </nav>
     <div class="tab-content" id="nav-tabContent">
-      <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">...</div>
-      <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">...</div>
-      <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">...</div>
+      {% for tag in tags %}
+        {% if tag.id == 1 %}
+        <div class="tab-pane fade show active" id="nav-{{ tag.short_name }}" role="tabpanel" aria-labelledby="nav-{{ tag.short_name }}-tab">
+          <table class="table table-striped table-bordered">
+            <thead>
+              <tr>
+                <th scope="col">メニュー</th>
+                <th scope="col">レビュー</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in items %}
+                {% if item.tag == tag %}
+                <tr>
+                  <td>{{ item.name }}</td>
+                  <td>
+                    <a href="{% url 'qmeshi_app:impression_list' item_id=item.id %}" class="btn btn-outline-info btn-sm">レビュー</a>
+                  </td>
+                </tr>
+                {% endif %}
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="tab-pane fade" id="nav-{{ tag.short_name }}" role="tabpanel" aria-labelledby="nav-{{ tag.short_name }}-tab">
+          <table class="table table-striped table-bordered">
+            <thead>
+              <tr>
+                <th scope="col">メニュー</th>
+                <th scope="col">レビュー</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in items %}
+                {% if item.tag == tag %}
+                <tr>
+                  <td>{{ item.name }}</td>
+                  <td>
+                    <a href="{% url 'qmeshi_app:impression_list' item_id=item.id %}" class="btn btn-outline-info btn-sm">レビュー</a>
+                  </td>
+                </tr>
+                {% endif %}
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% endif %}
+      {% endfor %}
     </div>
-    <table class="table table-striped table-bordered">
-      <thead>
-        <tr>
-          <th scope="col">種類</th>
-          <th scope="col">メニュー</th>
-          <th scope="col">レビュー</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for item in items %}
-        <tr>
-          <td>{{ item.tag.name }}</td>
-          <td>{{ item.name }}</td>
-          <td>
-            <a href="{% url 'qmeshi_app:impression_list' item_id=item.id %}" class="btn btn-outline-info btn-sm">レビュー</a>
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
     <a href="{% url 'qmeshi_app:menu_list' %}" class="btn btn-secondary btn-sm">今日のメニューへ</a>
 {% endblock content %}

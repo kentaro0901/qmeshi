@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 #from django.http import HttpResponse
 from django.views.generic.list import ListView
 
-from qmeshi_app.models import Cafeteria, Menu, Item, Impression
+from qmeshi_app.models import Cafeteria, Menu, Item, Impression, Tag
 from qmeshi_app.forms import ImpressionForm
 
 import datetime
@@ -22,8 +22,9 @@ def menu_list(request):
 
 def item_list(request):
     """アイテム一覧"""
+    tags = Tag.objects.all().order_by('id')
     items = Item.objects.all().order_by('name')
-    return render(request, 'qmeshi_app/item_list.html',  {'items': items})         
+    return render(request, 'qmeshi_app/item_list.html',  {'tags':tags, 'items': items})         
 
 
 class ImpressionList(ListView):

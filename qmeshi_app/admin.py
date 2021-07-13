@@ -4,8 +4,8 @@ from qmeshi_app.models import Menu, Item, Impression, Cafeteria, Tag
 # adminに表示したいデータ
 
 class TagAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name',) 
-    list_display_links = ('id', 'name',)
+    list_display = ('id', 'name', 'short_name',) 
+    list_display_links = ('id', 'name', 'short_name',)
 
 admin.site.register(Tag, TagAdmin)
 

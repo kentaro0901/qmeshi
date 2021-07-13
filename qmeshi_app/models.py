@@ -8,6 +8,7 @@ from django.db import models
 class Tag(models.Model):
     """種類"""
     name = models.CharField('種類', max_length=32)
+    short_name = models.CharField('略記', max_length=32, null=True)
 
     def __str__(self):
         return self.name
@@ -49,17 +50,3 @@ class Impression(models.Model):
 
     def __str__(self):
         return self.comment
-
-
-
-
-
-# データベース消すの若干手間なので最後にまとめてやる
-class Book(models.Model):
-    """書籍"""
-    name = models.CharField('書籍名', max_length=255)
-    publisher = models.CharField('出版社', max_length=255, blank=True)
-    page = models.IntegerField('ページ数', blank=True, default=0)
-
-    def __str__(self):
-        return self.name

@@ -4,7 +4,7 @@
 import json
 from collections import OrderedDict
 from django.http import HttpResponse
-from qmeshi_app.models import Book
+from qmeshi_app.models import Item
 
 
 def render_json_response(request, data, status=None):
@@ -21,27 +21,15 @@ def render_json_response(request, data, status=None):
     return response
 
 
-def book_list(request):
-    """書籍と感想のJSONを返す"""
-    books = []
-    for book in Book.objects.all().order_by('id'):
-
-        impressions = []
-        for impression in book.impressions.order_by('id'):
-            impression_dict = OrderedDict([
-                ('id', impression.id),
-                ('comment', impression.comment),
-            ])
-            impressions.append(impression_dict)
-
-        book_dict = OrderedDict([
-            ('id', book.id),
-            ('name', book.name),
-            ('publisher', book.publisher),
-            ('page', book.page),
-            ('impressions', impressions)
+def menu_list(request):
+    """JSONを返す"""
+    items = []
+    for item in Item.objects.all().order_by('id'):
+        item_dict = OrderedDict([
+            ('id', item.id),
+            ('name', item.name),
         ])
-        books.append(book_dict)
+        items.append(item_dict)
 
-    data = OrderedDict([ ('books', books) ])
+    data = OrderedDict([ ('items', items) ])
     return render_json_response(request, data)
