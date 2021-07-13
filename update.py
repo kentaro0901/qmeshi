@@ -50,9 +50,8 @@ for table_num in range(3,13):
         for menu in menu_df[[0,i]][2:].dropna(how='any').iterrows():
             cafeteria = Cafeteria.objects.get(table_num=table_num)
             tag = summarized_tag(menu[1][0])
-            menu = fit_string(menu[1][i])
-            for m in menu.split('/'): #A/Bを分離
-                m = re.sub(r'(\w+)(\(.+\))?', r'\1', m)
+            menu = summarized_menu(fit_string(menu[1][i]))
+            for m in menu.split('/'): #A/B
                 tag = Tag.objects.get(name=tag)
 
                 try:

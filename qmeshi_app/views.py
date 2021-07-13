@@ -29,7 +29,7 @@ class ImpressionList(ListView):
     """感想の一覧"""
     context_object_name='impressions'
     template_name='qmeshi_app/impression_list.html'
-    paginate_by = 2
+    paginate_by = 10
 
     def get(self, request, *args, **kwargs):
         item = get_object_or_404(Item, pk=kwargs['item_id'])

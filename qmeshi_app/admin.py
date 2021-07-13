@@ -36,8 +36,8 @@ admin.site.register(Impression, ImpressionAdmin)
 
 
 class CafeteriaAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'short_name', 'table_num', 'priority') 
-    list_display_links = ('name', 'short_name', 'table_num', 'priority')
+    list_display = ('id', 'name', 'short_name', 'opening_hours', 'table_num', 'priority') 
+    list_display_links = ('name', 'short_name', 'opening_hours', 'table_num', 'priority')
 
 
 admin.site.register(Cafeteria, CafeteriaAdmin)

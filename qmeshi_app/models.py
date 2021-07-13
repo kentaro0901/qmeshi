@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 # データベース用クラス
 # パラメータの追加は慎重に（特にnon-nullableの追加時とか）
@@ -30,6 +31,7 @@ class Cafeteria(models.Model):
     """食堂"""
     name = models.CharField('食堂名', max_length=32)
     short_name = models.CharField('略記', max_length=16, null=True)
+    opening_hours = models.CharField('営業時間', max_length=128, default='-')
     table_num = models.IntegerField('テーブル番号', null=True)
     priority = models.IntegerField('表示優先度', default=1)
 
@@ -52,6 +54,7 @@ class Impression(models.Model):
     """感想"""
     item = models.ForeignKey(Item, verbose_name='アイテム', related_name='impressions', on_delete=models.CASCADE)
     comment = models.TextField('コメント', max_length=1024, blank=True)
+    #score = models.IntegerField('評価', validators=[MinValueValidator(1), MaxValueValidator(5)], default= 3)
 
     def __str__(self):
         return self.comment
