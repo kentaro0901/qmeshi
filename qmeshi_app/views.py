@@ -12,17 +12,15 @@ def menu_list(request):
     today = datetime.date.today()
     weekdays = ['月', '火', '水' , '木', '金', '土', '日']
     date = f'{today.strftime("%m月%d日")}（{weekdays[today.weekday()]}）'
+    menues = Menu.objects.all().filter(start_date__lte=today, end_date__gte=today)
 
-    cafeteria = Cafeteria.objects.get(id=1) #メイン
-    menues = Menu.objects.all().filter(cafeteria=cafeteria, start_date__lte=today, end_date__gte=today)
-
-    #cafeterias = Cafeteria.objects.all().order_by('id')
-    return render(request,'qmeshi_app/menu_list.html', {'date':date, 'menues':menues})
+    cafeterias = Cafeteria.objects.all().order_by('priority')
+    return render(request,'qmeshi_app/menu_list.html', {'date':date, 'cafeterias':cafeterias, 'menues':menues})
 
 
 def item_list(request):
     """アイテム一覧"""
-    tags = Tag.objects.all().order_by('id')
+    tags = Tag.objects.all().order_by('priority')
     items = Item.objects.all().order_by('name')
     return render(request, 'qmeshi_app/item_list.html',  {'tags':tags, 'items': items})         
 

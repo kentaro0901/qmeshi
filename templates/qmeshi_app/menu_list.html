@@ -6,45 +6,72 @@
 <!-- ここforでうまくやりたい -->
 <h4 class="mt-4 border-bottom">{{ date }}のメニュー</h4>
 <ul class="nav nav-tabs" id="myTab" role="tablist">
+  {% for cafeteria in cafeterias %}
+    {% if cafeteria.id == 1 %}
     <li class="nav-item" role="presentation">
-        <a class="nav-link active" id="main-tab" data-bs-toggle="tab" href="#main" role="tab" aria-controls="main" aria-selected="true">メイン</a>
+      <a class="nav-link active" id="{{ cafeteria.short_name }}-tab" data-bs-toggle="tab" href="#{{ cafeteria.short_name }}" role="tab" aria-controls="{{ cafeteria.short_name }}" aria-selected="true">{{ cafeteria.name }}</a>
     </li>
+    {% else %}
     <li class="nav-item" role="presentation">
-        <a class="nav-link" id="quasis-tab" data-bs-toggle="tab" href="#quasis" role="tab" aria-controls="quasis" aria-selected="false">クアシス</a>
+      <a class="nav-link" id="{{ cafeteria.short_name }}-tab" data-bs-toggle="tab" href="#{{ cafeteria.short_name }}" role="tab" aria-controls="{{ cafeteria.short_name }}" aria-selected="false">{{ cafeteria.name }}</a>
     </li>
-    <li class="nav-item" role="presentation">
-        <a class="nav-link" id="dining-tab" data-bs-toggle="tab" href="#dining" role="tab" aria-controls="dining" aria-selected="false">地下食堂</a>
-    </li>
-    <li class="nav-item" role="presentation">
-      <a class="nav-link" id="ecafe-tab" data-bs-toggle="tab" href="#ecafe" role="tab" aria-controls="ecafe" aria-selected="false">E-Cafe</a>
-    </li>
+    {% endif %}
+  {% endfor %}
 </ul>
 <div class="tab-content" id="myTabContent">
-    <div class="tab-pane fade show active" id="main" role="tabpanel" aria-labelledby="main-tab">
-        <table class="table table-striped table-bordered">
-            <thead>
-              <tr>
-                <th scope="col">種類</th>
-                <th scope="col">メニュー</th>
-                <th scope="col">レビュー</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for menu in menues %}
-              <tr>
-                <td>{{ menu.item.tag.name }}</td>
-                <td>{{ menu.item.name }}</td>
-                <td>
-                  <a href="{% url 'qmeshi_app:impression_list' item_id=menu.item.id %}" class="btn btn-outline-info btn-sm">レビュー</a>
-                </td>
-              </tr>
-              {% endfor %}
-            </tbody>
-        </table>
+  {% for cafeteria in cafeterias %}
+    {% if cafeteria.id == 1 %}
+    <div class="tab-pane fade show active" id="{{ cafeteria.short_name }}" role="tabpanel" aria-labelledby="{{ cafeteria.short_name }}-tab">
+      <table class="table table-striped table-bordered">
+        <thead>
+          <tr>
+            <th scope="col">種類</th>
+            <th scope="col">メニュー</th>
+            <th scope="col">レビュー</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for menu in menues %}
+            {% if menu.cafeteria == cafeteria %}
+            <tr>
+              <td>{{ menu.item.tag.name }}</td>
+              <td>{{ menu.item.name }}</td>
+              <td>
+                <a href="{% url 'qmeshi_app:impression_list' item_id=menu.item.id %}" class="btn btn-outline-info btn-sm">レビュー</a>
+              </td>
+            </tr>
+            {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
-    <div class="tab-pane fade" id="quasis" role="tabpanel" aria-labelledby="quasis-tab">...</div>
-    <div class="tab-pane fade" id="dining" role="tabpanel" aria-labelledby="dining-tab">...</div>
-    <div class="tab-pane fade" id="ecafe" role="tabpanel" aria-labelledby="ecafe-tab">...</div>
+    {% else %}
+    <div class="tab-pane fade" id="{{ cafeteria.short_name }}" role="tabpanel" aria-labelledby="{{ cafeteria.short_name }}-tab">
+      <table class="table table-striped table-bordered">
+        <thead>
+          <tr>
+            <th scope="col">種類</th>
+            <th scope="col">メニュー</th>
+            <th scope="col">レビュー</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for menu in menues %}
+            {% if menu.cafeteria == cafeteria %}
+            <tr>
+              <td>{{ menu.item.tag.name }}</td>
+              <td>{{ menu.item.name }}</td>
+              <td>
+                <a href="{% url 'qmeshi_app:impression_list' item_id=menu.item.id %}" class="btn btn-outline-info btn-sm">レビュー</a>
+              </td>
+            </tr>
+            {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
+  {% endfor %}
 </div>
 <a href="{% url 'qmeshi_app:item_list' %}" class="btn btn-secondary btn-sm">メニュー一覧へ</a>
 
