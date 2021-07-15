@@ -11,8 +11,8 @@ admin.site.register(Tag, TagAdmin)
 
 
 class MenuAdmin(admin.ModelAdmin):
-    list_display = ('id', 'cafeteria', 'start_date', 'end_date', 'item',)        #一覧
-    list_display_links = ('start_date', 'end_date', 'item',)  #修正可能
+    list_display = ('id', 'cafeteria', 'start_date', 'end_date', 'period', 'item',)        #一覧
+    list_display_links = ('start_date', 'end_date', 'period', 'item',)  #修正可能
     raw_id_fields = ('cafeteria', 'item',)
 
 admin.site.register(Menu, MenuAdmin)

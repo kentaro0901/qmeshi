@@ -44,6 +44,7 @@ class Menu(models.Model):
     cafeteria = models.ForeignKey(Cafeteria, verbose_name='食堂', related_name='cafeteria', on_delete=models.CASCADE)
     start_date = models.DateField()
     end_date = models.DateField()
+    period = models.CharField('時間帯', max_length=16, default='')
     item = models.ForeignKey(Item, verbose_name='アイテム', related_name='item', on_delete=models.CASCADE)
 
     def __str__(self):
