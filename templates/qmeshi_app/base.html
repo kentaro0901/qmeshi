@@ -1,13 +1,16 @@
 {% load i18n static %}
+{% load django_bootstrap5 %}
+{% load static %}
+
 <!DOCTYPE html>{% get_current_language as LANGUAGE_CODE %}
 <html lang="{{ LANGUAGE_CODE|default:"en-us" }}">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link rel="stylesheet" href="{% static 'qmeshi_app/css/bootstrap.min.css' %}">
-{% block extra_css %}{% endblock %}
-<title>{% block title %}My books{% endblock %}</title>
-<!-- <link rel="icon" type="image/png" href="{% static '/icon/favicon.png' %}"> -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  {% bootstrap_css %}{% bootstrap_javascript %}
+  {% block extra_css %}{% endblock %}
+  <title>{% block title %}title{% endblock %}</title>
+  <link rel="icon" href="{% static 'qmeshi_app/images/qmeshi.ico' %}">
 </head>
 <body>
   <div class="container">
@@ -15,8 +18,6 @@
       {{ content }}
     {% endblock %}
   </div>
-<script src="{% static 'qmeshi_app/js/jquery-3.6.0.min.js' %}"></script>
-<script src="{% static 'qmeshi_app/js/bootstrap.bundle.min.js' %}"></script>
-{% block extra_js %}{% endblock %}
+  {% block extra_js %}{% endblock %}
 </body>
 </html>

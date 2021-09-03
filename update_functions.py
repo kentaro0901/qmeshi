@@ -90,7 +90,10 @@ def seikyo_update(table_num:int):
             break
         if menu_df.isnull()[i][1] or not re.search(r'\d', menu_df[i][1]): #nanまたは数値を含まない
             continue
-        w, s_d, e_d = re.findall(r'\d*/*\d+',menu_df[i][1])
+        try:
+            w, s_d, e_d = re.findall(r'\d*/*\d+',menu_df[i][1])
+        except:
+            continue
         m = int(re.findall(r'\d', menu_df[i][0])[0])
         s_day = int(s_d.split('/')[-1])
         e_day = int(e_d.split('/')[-1])
