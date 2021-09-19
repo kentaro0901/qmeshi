@@ -13,10 +13,10 @@ class MenuList(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        today = datetime.date.today()
+        date = datetime.datetime.strptime(self.kwargs.get('date'), "%Y-%m-%d").date() if self.kwargs.get('date') else datetime.date.today()
         weekdays = ['月', '火', '水' , '木', '金', '土', '日']
-        context['date'] = f'{today.strftime("%m月%d日")}（{weekdays[today.weekday()]}）'
-        context['menues'] = Menu.objects.filter(start_date__lte=today, end_date__gte=today)
+        context['date'] = f'{date.strftime("%m月%d日")}（{weekdays[date.weekday()]}）'
+        context['menues'] = Menu.objects.filter(start_date__lte=date, end_date__gte=date)
         context['cafeterias'] = Cafeteria.objects.all().order_by('priority')
         return context
 
