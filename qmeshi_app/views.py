@@ -40,14 +40,12 @@ class ImpressionList(ListView):
     context_object_name='impressions'
     template_name='qmeshi_app/impression_list.html'
     paginate_by = 10
+    model = Impression
 
-    def get(self, request, *args, **kwargs):
-        item = get_object_or_404(Item, pk=kwargs['item_id'])
-        impressions = item.impressions.all().order_by('id')
-        self.object_list = impressions
-
-        context = self.get_context_data(object_list=self.object_list, item=item)    
-        return self.render_to_response(context)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['item_id'] = self.kwargs.get('item_id')
+        return context
 
 
 class ImpressionAdd(CreateView):
