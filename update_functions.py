@@ -81,6 +81,9 @@ def flexible_get_item(tag:str, name:str):
 
 # 生協
 def seikyo_update(table_num:int):
+    cafeteria = Cafeteria.objects.get(table_num=table_num)
+    if Menu.objects.filter(start_date__lte=today, end_date__gte=today, cafeteria=cafeteria).exists():
+        return
 
     new_menues_df = pd.read_html('http://www.coop.kyushu-u.ac.jp/shokudou/month_menu.html', flavor='bs4')
     menu_df = new_menues_df[table_num]
@@ -113,7 +116,7 @@ def seikyo_update(table_num:int):
         start_date = datetime.date(s_year, s_month, s_day)
         end_date = datetime.date(e_year, e_month, e_day)
 
-
+        # 更新
         for menu in menu_df[[0,i]][2:].dropna(how='any').drop_duplicates().iterrows():
             cafeteria = Cafeteria.objects.get(table_num=table_num)
             tag = summarized_tag(menu[1][0])
@@ -126,12 +129,15 @@ def seikyo_update(table_num:int):
 
 # 日替（生協）
 def daily_update():
+    cafeteria = Cafeteria.objects.get(short_name='daily')
+    if Menu.objects.filter(start_date__lte=today, end_date__gte=today, cafeteria=cafeteria).exists():
+        return
+
     monday = today-datetime.timedelta(days=today.weekday())
     monday_str = monday.strftime('%y%m%d')
     url = f'http://www.coop.kyushu-u.ac.jp/teishoku{monday_str}.html'
     dfs = pd.read_html(url, flavor='bs4')
     dfs = pd.concat([dfs[i][:1] for i in range(4, 10)]).reset_index().drop('index', axis=1)
-    cafeteria = Cafeteria.objects.get(short_name='daily')
 
     m = monday.month
     y = monday.year
@@ -154,13 +160,16 @@ def daily_update():
 
 # あじや
 def ajiya_update():
+    cafeteria = Cafeteria.objects.get(short_name='ajiya')
+    if Menu.objects.filter(start_date__lte=today, end_date__gte=today, cafeteria=cafeteria).exists():
+        return
+
     url = 'http://ajiya1.com/menu/daily/'
     headers = {'User-Agent' : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36'}
     response = requests.get(url, headers = headers)
     soup = BeautifulSoup(response.content, 'html.parser')
     elems = soup.select('h2')[1]
     today_menu = elems.contents[0].split()
-    cafeteria = Cafeteria.objects.get(short_name='ajiya')
 
     y = today.year
     md = re.findall(r'\d+', today_menu[0])
@@ -190,13 +199,12 @@ def rishoku_update():
             break
         if not '日替わり' in status.text:
             continue
-        for text in status.text.split(): #当日分全部更新するので後で直す
+        for text in status.text.split():
             if '定食' in text:
                 text = text.split('：')[-1]
                 item = flexible_get_item(tag='定食', name=text)
                 period = '昼' if created_date <= datetime.datetime(today.year, today.month, today.day, 13, 0, 0) else '夜'
-                new_menu = Menu(cafeteria=cafeteria, start_date=today, end_date=today, period=period, item=item)
-                new_menu.save()
+                new_menu, _ = Menu.objects.update_or_create(cafeteria=cafeteria, start_date=today, end_date=today, period=period, item=item)
 
 
 def delete_oldmenu():

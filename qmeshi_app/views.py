@@ -1,10 +1,8 @@
-from django.shortcuts import render, get_object_or_404, redirect
-#from django.http import HttpResponse
-from django.views.generic import ListView, TemplateView, UpdateView, CreateView
+from django.shortcuts import get_object_or_404
+from django.views.generic import ListView, TemplateView, CreateView
 from django.urls import reverse
 
-from qmeshi_app.models import Cafeteria, Menu, Item, Impression, Tag
-from qmeshi_app.forms import ImpressionForm
+from qmeshi_app.models import *
 
 import datetime
 
@@ -49,9 +47,11 @@ class ImpressionList(ListView):
 
 
 class ImpressionAdd(CreateView):
+    """感想の追加"""
     fields = ('comment',)
     model = Impression
     template_name = 'qmeshi_app/impression_add.html'
+
 
     def form_valid(self, form):
         form.instance.item = get_object_or_404(Item, pk=self.kwargs.get('item_id'))
@@ -63,4 +63,4 @@ class ImpressionAdd(CreateView):
         return context
 
     def get_success_url(self):
-        return reverse('qmeshi_app:impression_list', kwargs={ 'item_id' : self.kwargs.get('item_id') })
+        return reverse('qmeshi_app:impression_list', kwargs={ 'item_id' : self.kwargs.get('item_id') }) # URL生成してるだけ
