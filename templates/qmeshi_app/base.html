@@ -10,6 +10,7 @@
   {% block extra_css %}{% endblock %}
   <title>{% block title %}title{% endblock %}</title>
   <link rel="icon" href="{% static 'qmeshi_app/images/qmeshi.ico' %}">
+  <link rel="stylesheet" href="{% static 'qmeshi_app/css/sticky-footer.css' %}">
 </head>
 <body>
   <div class="container">
@@ -19,4 +20,9 @@
   </div>
   {% block extra_js %}{% endblock %}
 </body>
+<footer class="footer">
+	<div class="container text-center">
+	  <p class="text-muted">©︎2021 okinotori.net</p>
+	</div>
+</footer>
 </html>
