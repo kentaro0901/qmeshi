@@ -38,12 +38,15 @@ class ImpressionList(ListView):
     context_object_name='impressions'
     template_name='qmeshi_app/impression_list.html'
     paginate_by = 10
-    model = Impression
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['item_id'] = self.kwargs.get('item_id')
         return context
+
+    def get_queryset(self):
+        queryset = Impression.objects.filter(item=self.kwargs.get('item_id'))
+        return queryset
 
 
 class ImpressionAdd(CreateView):
@@ -51,7 +54,6 @@ class ImpressionAdd(CreateView):
     fields = ('comment',)
     model = Impression
     template_name = 'qmeshi_app/impression_add.html'
-
 
     def form_valid(self, form):
         form.instance.item = get_object_or_404(Item, pk=self.kwargs.get('item_id'))

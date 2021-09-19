@@ -1,35 +1,24 @@
-#from django.shortcuts import render
+import datetime
 
-# Create your views here.
-import json
-from collections import OrderedDict
-from django.http import HttpResponse
-from qmeshi_app.models import Item
+from rest_framework import viewsets
 
-
-def render_json_response(request, data, status=None):
-    """response を JSON で返却"""
-    json_str = json.dumps(data, ensure_ascii=False, indent=2)
-    callback = request.GET.get('callback')
-    if not callback:
-        callback = request.POST.get('callback')  # POSTでJSONPの場合
-    if callback:
-        json_str = "%s(%s)" % (callback, json_str)
-        response = HttpResponse(json_str, content_type='application/javascript; charset=UTF-8', status=status)
-    else:
-        response = HttpResponse(json_str, content_type='application/json; charset=UTF-8', status=status)
-    return response
+from qmeshi_app.models import *
+from api.serializer import *
 
 
-def menu_list(request):
-    """JSONを返す"""
-    items = []
-    for item in Item.objects.all().order_by('id'):
-        item_dict = OrderedDict([
-            ('id', item.id),
-            ('name', item.name),
-        ])
-        items.append(item_dict)
+class ItemViewSet(viewsets.ModelViewSet):
+    queryset = Item.objects.all()
+    serializer_class = ItemSerializer
+    filter_fields = ('tag',)
 
-    data = OrderedDict([ ('items', items) ])
-    return render_json_response(request, data)
+
+class MenuViewSet(viewsets.ModelViewSet):
+    queryset = Menu.objects.filter(start_date__lte=datetime.date.today(), end_date__gte=datetime.date.today())
+    serializer_class = MenuSerializer
+    filter_fields = ('cafeteria',)
+
+
+class CafeteriaViewSet(viewsets.ModelViewSet):
+    queryset = Cafeteria.objects.all()
+    serializer_class = CafeteriaSerializer
+

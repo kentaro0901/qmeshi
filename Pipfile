@@ -20,6 +20,8 @@ tweepy = "*"
 pandas = "*"
 html5lib = "*"
 django-bootstrap5 = "*"
+djangorestframework = "*"
+django-filter = "*"
 
 [dev-packages]
 
