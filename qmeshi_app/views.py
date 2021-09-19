@@ -1,28 +1,38 @@
 from django.shortcuts import render, get_object_or_404, redirect
 #from django.http import HttpResponse
-from django.views.generic.list import ListView
+from django.views.generic import ListView, TemplateView, UpdateView, CreateView
+from django.urls import reverse
 
 from qmeshi_app.models import Cafeteria, Menu, Item, Impression, Tag
 from qmeshi_app.forms import ImpressionForm
 
 import datetime
 
-def menu_list(request):
+
+class MenuList(TemplateView):
+    """今日のメニュー"""
+    template_name = 'qmeshi_app/menu_list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        today = datetime.date.today()
+        weekdays = ['月', '火', '水' , '木', '金', '土', '日']
+        context['date'] = f'{today.strftime("%m月%d日")}（{weekdays[today.weekday()]}）'
+        context['menues'] = Menu.objects.filter(start_date__lte=today, end_date__gte=today)
+        context['cafeterias'] = Cafeteria.objects.all().order_by('priority')
+        return context
+
+
+class ItemList(ListView):
     """メニュー一覧"""
-    today = datetime.date.today()
-    weekdays = ['月', '火', '水' , '木', '金', '土', '日']
-    date = f'{today.strftime("%m月%d日")}（{weekdays[today.weekday()]}）'
-    menues = Menu.objects.filter(start_date__lte=today, end_date__gte=today)
+    context_object_name = 'items'
+    template_name = 'qmeshi_app/item_list.html'
+    model = Item
 
-    cafeterias = Cafeteria.objects.all().order_by('priority')
-    return render(request,'qmeshi_app/menu_list.html', {'date':date, 'cafeterias':cafeterias, 'menues':menues})
-
-
-def item_list(request):
-    """アイテム一覧"""
-    tags = Tag.objects.all().order_by('priority')
-    items = Item.objects.all().order_by('name')
-    return render(request, 'qmeshi_app/item_list.html',  {'tags':tags, 'items': items})         
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['tags'] = Tag.objects.all().order_by('priority')
+        return context
 
 
 class ImpressionList(ListView):
@@ -40,19 +50,19 @@ class ImpressionList(ListView):
         return self.render_to_response(context)
 
 
-def impression_edit(request, item_id, impression_id=None):
-    """感想の編集"""
-    item = get_object_or_404(Item, pk=item_id) 
-    impression = get_object_or_404(Impression, pk=impression_id) if impression_id else Impression()
+class ImpressionAdd(CreateView):
+    fields = ('comment',)
+    model = Impression
+    template_name = 'qmeshi_app/impression_add.html'
 
-    if request.method == 'POST':
-        form = ImpressionForm(request.POST, instance=impression)
-        if form.is_valid():
-            impression = form.save(commit=False)
-            impression.item = item
-            impression.save()
-            return redirect('qmeshi_app:impression_list', item_id=item_id)
-    else:
-        form = ImpressionForm(instance=impression)
+    def form_valid(self, form):
+        form.instance.item = get_object_or_404(Item, pk=self.kwargs.get('item_id'))
+        return super().form_valid(form)
 
-    return render(request, 'qmeshi_app/impression_edit.html', dict(form=form, item_id=item_id, impression_id=impression_id))
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['item_id'] = self.kwargs.get('item_id')
+        return context
+
+    def get_success_url(self):
+        return reverse('qmeshi_app:impression_list', kwargs={ 'item_id' : self.kwargs.get('item_id') })

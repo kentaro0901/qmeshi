@@ -55,7 +55,7 @@ small{
               <td>{{ menu.period }}</td>
               <td>{{ menu.item.name }}</td>
               <td>
-                <a href="{% url 'qmeshi_app:impression_list' item_id=menu.item.id %}" class="btn btn-outline-info btn-sm">レビュー</a>
+                <a href="{% url 'qmeshi_app:impression_list' id=menu.item.id %}" class="btn btn-outline-info btn-sm">レビュー</a>
               </td>
             </tr>
             {% endif %}
