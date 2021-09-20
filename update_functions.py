@@ -82,14 +82,14 @@ def flexible_get_item(tag:str, name:str):
 # 生協
 def seikyo_update(table_num:int):
     cafeteria = Cafeteria.objects.get(table_num=table_num)
-    if Menu.objects.filter(start_date__lte=today, end_date__gte=today, cafeteria=cafeteria).exists():
+    if Menu.objects.filter(end_date__gte=today, cafeteria=cafeteria).exists():
         return
 
     new_menues_df = pd.read_html('http://www.coop.kyushu-u.ac.jp/shokudou/month_menu.html', flavor='bs4')
     menu_df = new_menues_df[table_num]
 
     for i in menu_df:
-        if len(menu_df) < 3: # メニューがない（あとで変える）
+        if len(menu_df) < 3: # メニューがない
             break
         if menu_df.isnull()[i][1] or not re.search(r'\d', menu_df[i][1]): #nanまたは数値を含まない
             continue
@@ -130,7 +130,7 @@ def seikyo_update(table_num:int):
 # 日替（生協）
 def daily_update():
     cafeteria = Cafeteria.objects.get(short_name='daily')
-    if Menu.objects.filter(start_date__lte=today, end_date__gte=today, cafeteria=cafeteria).exists():
+    if Menu.objects.filter(end_date__gte=today, cafeteria=cafeteria).exists():
         return
 
     monday = today-datetime.timedelta(days=today.weekday())
@@ -161,7 +161,7 @@ def daily_update():
 # あじや
 def ajiya_update():
     cafeteria = Cafeteria.objects.get(short_name='ajiya')
-    if Menu.objects.filter(start_date__lte=today, end_date__gte=today, cafeteria=cafeteria).exists():
+    if Menu.objects.filter(end_date__gte=today, cafeteria=cafeteria).exists():
         return
 
     url = 'http://ajiya1.com/menu/daily/'
