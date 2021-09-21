@@ -6,3 +6,5 @@ daily_update()
 ajiya_update()
 rishoku_update()
 #delete_oldmenu()
+
+print('finished.')
