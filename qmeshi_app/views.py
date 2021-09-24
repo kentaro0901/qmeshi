@@ -84,3 +84,15 @@ class ImpressionAdd(CreateView):
 
     def get_success_url(self):
         return reverse('qmeshi_app:impression_list', kwargs={ 'item_id' : self.kwargs.get('item_id') }) # URL生成してるだけ
+
+
+# 本番環境でサーバーエラーの詳細を表示する
+from django.views.decorators.csrf import requires_csrf_token
+from django.http import HttpResponseServerError
+
+@requires_csrf_token
+def my_customized_server_error(request, template_name='500.html'):
+    import sys
+    from django.views import debug
+    error_html = debug.technical_500_response(request, *sys.exc_info()).content
+    return HttpResponseServerError(error_html)
