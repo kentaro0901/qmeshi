@@ -1,5 +1,7 @@
 import datetime
 import os
+
+from numpy.lib.nanfunctions import _replace_nan
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'qmeshi.settings')
 
 from PIL import Image, ImageDraw, ImageFont
@@ -29,13 +31,13 @@ api = tweepy.API(auth)
 today = datetime.date.today()
 
 
-def create_menu(names):
+def create_menu(names, _replace=('', '')):
     menu_str = ''
     for name in names:
         cafeteria = Cafeteria.objects.get(short_name=name)
         menues = Menu.objects.filter(start_date__lte=today, end_date__gte=today, cafeteria=cafeteria)
-        menu_items = [ menu.item.name for menu in menues ]
         menu_str += f'【{cafeteria.name}】\n\n'
+        menu_items = [ (f'（{menu.period}）\n' if menu.period!='' else '') + menu.item.name for menu in menues ]
         menu_str += '\n'.join(menu_items) if len(menu_items) > 0 else 'メニューが公開されていません'
         menu_str += '\n\n'
     return menu_str
@@ -52,7 +54,7 @@ def create_image(name, menu_str):
 
 # 画像生成
 images = []
-images.append(create_image('main', create_menu(['daily', 'main'])))
+images.append(create_image('main', create_menu(['daily', 'main'], _replace=('・', '\n・'))))
 images.append(create_image('center', create_menu(['quasis', 'dining'])))
 images.append(create_image('west', create_menu(['rishoku', 'ajiya', 'ecafe', 'rantan'])))
 images.append(create_image('bigdora', create_menu(['dora'])))

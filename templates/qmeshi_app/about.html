@@ -1,0 +1,63 @@
+{% extends "qmeshi_app/base.html" %}
+{% load static %}
+
+{% block title %}九大のメシ{% endblock title %}
+
+{% block content %}
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{% url 'qmeshi_app:menu_list' %}">九大のメシ</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            今日のメニュー
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+            {% for cafeteria in cafeterias %}
+            <li><a class="dropdown-item" href="{% url 'qmeshi_app:menu_list' %}#{{ cafeteria.short_name }}">{{ cafeteria.name }}</a></li>
+            {% endfor %}
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'qmeshi_app:about' %}">このサイトについて</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<h1 class="mt-4 border-bottom text-center">このサイトについて</h1>
+<h2 class="mt-4 border-bottom text-center">概要</h2>
+<p class="h6">
+  九州大学内の今日の学食メニューを一覧形式で確認できるサイトです．
+</p>
+
+<h2 class="mt-4 border-bottom text-center">作成経緯</h2>
+<p class="h6">
+  　このサイトの管理人は現在九州大学に在籍しており，構内に存在する学生食堂（以下学食）をよく利用している．学食のメニューを見てからどの食堂に行くか考えたいと思うことも多いが，現状以下のような不便な点がある．
+</p>
+<ul>
+  <li class="h6">公開されているメニューはひと月分であり，今日のメニューがぱっと見でわかりにくい．</li>
+  <li class="h6">メニューページはレスポンシブ表示に対応しておらず，スマホだと見にくい．</li>
+  <li class="h6">日替わりメニューが別ページに存在するため，ページを跨ぐ必要がある．</li>
+  <li class="h6">運営主体が違う学食のメニューは，別サイトなどを確認する必要がある．</li>
+</ul>
+<p class="h6">
+  　これらの問題点を解決したく思い，このサイトの作成に取り掛かった．順次改善していきたいと考えているので，ご意見は管理人のツイッター（後述）のDMまで．
+</p>
+
+<h2 class="mt-4 border-bottom text-center">リンク</h2>
+<ul>
+  <li class="h6"><a href="http://www.coop.kyushu-u.ac.jp/">九州大学生活共同組合</a></li>
+  <li class="h6"><a href="https://ajiya1.com/">お弁当のあじや</a></li>
+  <li class="h6"><a href="http://www.ito-bigleaf.com/gkitchen/">理学部食堂</a></li>
+  <li class="h6"><a href="https://twitter.com/bigleaf201510">理学部食堂（Twitter）</a></li>
+  <li class="h6"><a href="https://twitter.com/qu_gakushoku">九大学食bot（Twitter）</a></li>
+  <li class="h6"><a href="https://twitter.com/pino_cipq">管理人（Twitter）</a></li>
+  <li class="h6"><a href="https://okinotori.net/">管理人（ホームページ）</a></li>
+</ul>
+
+{% endblock content %}

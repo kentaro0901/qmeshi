@@ -16,10 +16,28 @@ class MenuList(TemplateView):
         date = datetime.datetime.strptime(self.kwargs.get('date'), "%Y-%m-%d").date() if self.kwargs.get('date') else datetime.date.today()
         weekdays = ['月', '火', '水' , '木', '金', '土', '日']
         context['date'] = f'{date.strftime("%m月%d日")}（{weekdays[date.weekday()]}）'
-        context['menues'] = Menu.objects.filter(start_date__lte=date, end_date__gte=date)
+        cafeterias = []
+        for cafeteria in Cafeteria.objects.all().order_by('priority'):
+            menues = Menu.objects.filter(start_date__lte=date, end_date__gte=date, cafeteria=cafeteria)
+            l_menues = menues[:(menues.count()+1)//2]
+            r_menues = menues[(menues.count()+1)//2:]
+            cafeterias.append({'obj':cafeteria, 'l_menues':l_menues, 'r_menues':r_menues})  
+        context['cafeterias'] = cafeterias
+        return context
+
+
+class About(TemplateView):
+    """概要"""
+    template_name = 'qmeshi_app/about.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         context['cafeterias'] = Cafeteria.objects.all().order_by('priority')
         return context
 
+
+
+# 以下後回し
 
 class ItemList(ListView):
     """メニュー一覧"""

@@ -124,10 +124,10 @@ def daily_update():
         date = datetime.date(y, m, d)
 
         if not item.isnull()[2] and item[2][-1:]!='日':
-            lunch = item[2].replace(' ', '')
+            lunch = item[2].replace(' ', '').replace('・', '\n・').strip()
             Menu.objects.create(cafeteria=cafeteria, start_date=date, end_date=date, period='昼', item=flexible_get_item(tag='定食', name=lunch))
         if not item.isnull()[5]:
-            dinner = item[5].replace(' ', '')
+            dinner = item[5].replace(' ', '').replace('・', '\n・').strip()
             Menu.objects.create(cafeteria=cafeteria, start_date=date, end_date=date, period='夜', item=flexible_get_item(tag='定食', name=dinner))
 
 
