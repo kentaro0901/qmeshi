@@ -135,9 +135,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-# collectされるとこ
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-# テンプレのstaticのURL
+# collectstaticされる場所
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+# 実際のURL
 STATIC_URL = '/static/'
 # トップページとか
 # STATICFILES_DIRS = (
@@ -147,7 +147,7 @@ STATIC_URL = '/static/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+# STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
