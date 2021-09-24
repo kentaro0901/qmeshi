@@ -7,7 +7,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('qmeshi_app', '0003_alter_item_tag'),
+        ('qmeshi_app', '0001_initial'),
     ]
 
     operations = [
