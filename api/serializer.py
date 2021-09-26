@@ -3,20 +3,28 @@ from rest_framework import serializers
 from qmeshi_app.models import *
 
 
-class ItemSerializer(serializers.ModelSerializer):
+class TagSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Item
+        model = Tag
         fields = '__all__'  
 
 
-class MenuSerializer(serializers.ModelSerializer):
-    item = ItemSerializer()
+class ItemSerializer(serializers.ModelSerializer):
+    tag = TagSerializer()
     class Meta:
-        model = Menu
-        fields = ('cafeteria', 'item',)
+        model = Item
+        fields = '__all__'  
 
 
 class CafeteriaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cafeteria
         fields = '__all__'
+
+
+class MenuSerializer(serializers.ModelSerializer):
+    cafeteria = CafeteriaSerializer()
+    item = ItemSerializer()
+    class Meta:
+        model = Menu
+        fields = ('cafeteria', 'item',)
