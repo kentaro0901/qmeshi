@@ -79,7 +79,7 @@ def seikyo_update(table_num:int):
             w, s_d, e_d = re.findall(r'\d*/*\d+',menu_df[i][1])
         except:
             continue
-        m = int(re.findall(r'\d', menu_df[i][0])[0])
+        m = int(re.findall(r'\d+', menu_df[i][0])[0])
         s_day = int(s_d.split('/')[-1])
         e_day = int(e_d.split('/')[-1])
 
