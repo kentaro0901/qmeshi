@@ -63,7 +63,9 @@ def flexible_get_item(tag:str, name:str):
 # 生協
 def seikyo_update(table_num:int):
     cafeteria = Cafeteria.objects.get(table_num=table_num)
+    print(cafeteria.name, end='\t')
     if Menu.objects.filter(end_date__gte=today, cafeteria=cafeteria).exists():
+        print('skipped.')
         return
 
     new_menues_df = pd.read_html('http://www.coop.kyushu-u.ac.jp/shokudou/month_menu.html', flavor='bs4')
@@ -71,6 +73,7 @@ def seikyo_update(table_num:int):
 
     for i in menu_df:
         if len(menu_df) < 3: # メニューがない
+            print('skipped.')
             break
         if menu_df.isnull()[i][1] or not re.search(r'\d', menu_df[i][1]): # nanまたは数値を含まない
             continue
@@ -103,12 +106,15 @@ def seikyo_update(table_num:int):
             cafeteria = Cafeteria.objects.get(table_num=table_num)
             tag = menu[1][0].replace(' ', '').replace('　', '')   
             Menu.objects.create(cafeteria=cafeteria, start_date=start_date, end_date=end_date, item=flexible_get_item(tag=tag, name=menu[1][i]))
+        print('updated.')
 
 
 # 日替（生協）
 def daily_update():
     cafeteria = Cafeteria.objects.get(short_name='daily')
+    print(cafeteria.name, end='\t')
     if Menu.objects.filter(end_date__gte=today, cafeteria=cafeteria).exists():
+        print('skipped.')
         return
 
     monday = today-datetime.timedelta(days=today.weekday())
@@ -129,12 +135,15 @@ def daily_update():
         if not item.isnull()[5]:
             dinner = item[5].replace(' ', '').replace('・', '\n・').strip()
             Menu.objects.create(cafeteria=cafeteria, start_date=date, end_date=date, period='夜', item=flexible_get_item(tag='定食', name=dinner))
+        print('updated.')
 
 
 # あじや
 def ajiya_update():
     cafeteria = Cafeteria.objects.get(short_name='ajiya')
+    print(cafeteria.name, end='\t')
     if Menu.objects.filter(end_date__gte=today, cafeteria=cafeteria).exists():
+        print('skipped.')
         return
 
     response = requests.get('http://ajiya1.com/menu/daily/', headers = {'User-Agent' : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36'})
@@ -143,6 +152,7 @@ def ajiya_update():
     menu = elems.contents[0].split()[1]
     item = flexible_get_item(tag='弁当', name=menu)
     Menu.objects.create(cafeteria=cafeteria, start_date=today, end_date=today, item=item)
+    print('updated.')
 
 
 # 理食
@@ -155,12 +165,14 @@ def rishoku_update():
     auth.set_access_token(AT, AS)
     api = tweepy.API(auth)
     cafeteria = Cafeteria.objects.get(short_name='rishoku')
+    print(cafeteria.name, end='\t')
 
     # メモ：毎日11:00すぎに昼定食，16:30すぎに夜定食をツイートする模様
     statuses = api.user_timeline(id='bigleaf201510') 
     for status in statuses:
         created_date = status.created_at+datetime.timedelta(hours=9) 
         if created_date.date() != today:
+            print('updated.')
             break
         if not '日替わり' in status.text:
             continue
@@ -174,3 +186,4 @@ def rishoku_update():
 
 def delete_oldmenu():
     Menu.objects.filter(end_date__lt=today).delete()
+    print('oldmenu deleted.')
