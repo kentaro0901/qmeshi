@@ -15,6 +15,14 @@ from qmeshi_app.models import Menu, Cafeteria, Item, Tag
 
 today = datetime.date.today()
 
+CK = os.environ['TWITTER_CK']
+CS = os.environ['TWITTER_CS']
+AT = os.environ['TWITTER_AT']
+AS = os.environ['TWITTER_AS']
+auth = tweepy.OAuthHandler(CK, CS)
+auth.set_access_token(AT, AS)
+api = tweepy.API(auth)
+
 
 def lcs(S, T):
     """最長共通部分列"""
@@ -157,13 +165,6 @@ def ajiya_update():
 
 # 理食
 def rishoku_update():
-    CK = os.environ['TWITTER_CK']
-    CS = os.environ['TWITTER_CS']
-    AT = os.environ['TWITTER_AT']
-    AS = os.environ['TWITTER_AS']
-    auth = tweepy.OAuthHandler(CK, CS)
-    auth.set_access_token(AT, AS)
-    api = tweepy.API(auth)
     cafeteria = Cafeteria.objects.get(short_name='rishoku')
     print(cafeteria.name, end='\t')
 
@@ -182,6 +183,29 @@ def rishoku_update():
                 item = flexible_get_item(tag='定食', name=text)
                 period = '昼' if created_date <= datetime.datetime(today.year, today.month, today.day, 13, 0, 0) else '夜'
                 Menu.objects.update_or_create(cafeteria=cafeteria, start_date=today, end_date=today, period=period, item=item)
+
+
+# Manly
+def manly_update():
+    cafeteria = Cafeteria.objects.get(short_name='manly')
+    print(cafeteria.name, end='\t')
+
+    # メモ：毎日11:00すぎにツイート
+    statuses = api.user_timeline(id='kyushuManly') 
+    for status in statuses:
+        created_date = status.created_at+datetime.timedelta(hours=9) 
+        if created_date.date() != today:
+            print('updated.')
+            break
+        if not '日替わり' in status.text:
+            continue
+        for text in status.text.split():
+            if '♕' in text: #メイン
+                item = flexible_get_item(tag='メイン', name=text.replace('♕', ''))
+                Menu.objects.update_or_create(cafeteria=cafeteria, start_date=today, end_date=today, item=item)
+            if '♔' in text: #プラスワンデザート
+                item = flexible_get_item(tag='プラスワンデザート', name=text.replace('♔', ''))
+                Menu.objects.update_or_create(cafeteria=cafeteria, start_date=today, end_date=today, item=item)
 
 
 def delete_oldmenu():

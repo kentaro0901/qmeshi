@@ -5,6 +5,7 @@ for i in range(3,13):
 daily_update()
 ajiya_update()
 rishoku_update()
+manly_update()
 delete_oldmenu()
 
 print('finished.')
