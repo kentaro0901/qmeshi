@@ -203,8 +203,8 @@ def manly_update():
             if '♕' in text: #メイン
                 item = flexible_get_item(tag='メイン', name=text.replace('♕', ''))
                 Menu.objects.update_or_create(cafeteria=cafeteria, start_date=today, end_date=today, item=item)
-            if '♔' in text: #プラスワンデザート
-                item = flexible_get_item(tag='プラスワンデザート', name=text.replace('♔', ''))
+            if '♔' in text or '♚' in text: #プラスワンデザート
+                item = flexible_get_item(tag='プラスワンデザート', name=text.replace('♔', '').replace('♚', ''))
                 Menu.objects.update_or_create(cafeteria=cafeteria, start_date=today, end_date=today, item=item)
 
 
