@@ -10,4 +10,4 @@ urlpatterns = [
 # サーバーエラーの詳細を表示する
 from qmeshi_app import views
 
-handler500 = views.my_customized_server_error
+# handler500 = views.my_customized_server_error
