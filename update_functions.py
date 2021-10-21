@@ -143,7 +143,8 @@ def daily_update():
         if not item.isnull()[5]:
             dinner = item[5].replace(' ', '').replace('・', '\n・').strip()
             Menu.objects.create(cafeteria=cafeteria, start_date=date, end_date=date, period='夜', item=flexible_get_item(tag='定食', name=dinner))
-        print('updated.')
+    
+    print('updated.')
 
 
 # あじや
