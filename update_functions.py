@@ -114,7 +114,8 @@ def seikyo_update(table_num:int):
             cafeteria = Cafeteria.objects.get(table_num=table_num)
             tag = menu[1][0].replace(' ', '').replace('　', '')   
             Menu.objects.create(cafeteria=cafeteria, start_date=start_date, end_date=end_date, item=flexible_get_item(tag=tag, name=menu[1][i]))
-        print('updated.')
+    
+    print('updated.')
 
 
 # 日替（生協）
