@@ -5,3 +5,4 @@ __pycache__
 0ld
 test.ipynb
 media/tweetbot/*.jpg
+media/tweetbot/log.txt
