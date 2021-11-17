@@ -1,10 +1,13 @@
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import ListView, TemplateView, CreateView
 from django.urls import reverse
 
 from qmeshi_app.models import *
 
 import datetime
+
+def default(request):
+    return redirect('qmeshi_app:menu_list')
 
 
 class MenuList(TemplateView):
