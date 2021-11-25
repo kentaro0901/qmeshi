@@ -19,7 +19,7 @@ dir = os.path.dirname(os.path.abspath(__file__))
 media_dir = os.path.join(dir, 'media/tweetbot')
 ttfont_name = os.path.join(dir, 'azukiP.ttf')
 font_size = 36
-canvas_size = (900, 1300)
+canvas_size = (900, 1500)
 background_rgb = (255, 255, 255)
 text_rgb = (0, 0, 0)
 
@@ -48,7 +48,7 @@ def create_image(name, menu_str):
     img  = Image.new('RGB', canvas_size, background_rgb)
     draw = ImageDraw.Draw(img)
     font = ImageFont.truetype(ttfont_name, font_size)
-    text_top_left = (canvas_size[0]//12, canvas_size[1]//12)
+    text_top_left = (75, 75)
     draw.text(text_top_left, menu_str, fill=text_rgb, font=font)
     img.save(os.path.join(media_dir, f'{name}.jpg'))
     return os.path.join(media_dir, f'{name}.jpg')
@@ -56,10 +56,10 @@ def create_image(name, menu_str):
 # 画像生成
 try:
     images = []
-    images.append(create_image('main', create_menu(['daily', 'main'], _replace=('・', '\n・'))))
-    images.append(create_image('center', create_menu(['quasis', 'dining'])))
-    images.append(create_image('west', create_menu(['rishoku', 'ajiya', 'ecafe', 'rantan'])))
-    images.append(create_image('bigdora', create_menu(['dora'])))
+    images.append(create_image('main', create_menu(['daily', 'main', 'rishoku'], _replace=('・', '\n・'))))
+    images.append(create_image('quasis', create_menu(['dining', 'quasis', 'ajiya'])))
+    images.append(create_image('agre', create_menu(['agre', 'medical', 'manly'])))
+    images.append(create_image('dora', create_menu(['dora', 'sky'])))
 except:
     log('画像の生成に失敗しました．')
     exit()
