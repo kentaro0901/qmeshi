@@ -177,11 +177,11 @@ def rishoku_update():
         if created_date.date() != today:
             print('updated.')
             break
-        if not '日替わり' in status.text:
+        if not '日替わり' in status.text: # ここ表記揺れが不安
             continue
         for text in status.text.split():
             if '定食' in text:
-                text = text.split('：')[-1]
+                text = text.replace('：', ':').split(':')[-1]
                 item = flexible_get_item(tag='定食', name=text)
                 period = '昼' if created_date <= datetime.datetime(today.year, today.month, today.day, 13, 0, 0) else '夜'
                 Menu.objects.update_or_create(cafeteria=cafeteria, start_date=today, end_date=today, period=period, item=item)
