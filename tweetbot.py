@@ -28,7 +28,7 @@ today = datetime.date.today()
 
 def log(text):
     time = datetime.datetime.now()
-    with open(os.path.join(media_dir, 'log.txt'), mode='a') as f:
+    with open('log.txt', mode='a') as f:
         f.write(f'{time}\t{text}\n')
 
 
