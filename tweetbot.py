@@ -19,7 +19,7 @@ dir = os.path.dirname(os.path.abspath(__file__))
 media_dir = os.path.join(dir, 'media/tweetbot')
 ttfont_name = os.path.join(dir, 'azukiP.ttf')
 font_size = 36
-canvas_size = (900, 1500)
+canvas_size = (900, 1600)
 background_rgb = (255, 255, 255)
 text_rgb = (0, 0, 0)
 
@@ -37,7 +37,7 @@ def create_menu(names, _replace=('', '')):
     for name in names:
         cafeteria = Cafeteria.objects.get(short_name=name)
         menues = Menu.objects.filter(start_date__lte=today, end_date__gte=today, cafeteria=cafeteria)
-        menu_str += f'【{cafeteria.name}】\n\n'
+        menu_str += f'【{cafeteria.name}】\n'
         menu_items = [ (f'（{menu.period}）\n' if menu.period!='' else '') + menu.item.name for menu in menues ]
         menu_str += '\n'.join(menu_items) if len(menu_items) > 0 else 'メニューが公開されていません'
         menu_str += '\n\n'
@@ -56,10 +56,10 @@ def create_image(name, menu_str):
 # 画像生成
 try:
     images = []
-    images.append(create_image('main', create_menu(['daily', 'main', 'rishoku'], _replace=('・', '\n・'))))
-    images.append(create_image('quasis', create_menu(['dining', 'quasis', 'ajiya'])))
-    images.append(create_image('agre', create_menu(['agre', 'medical', 'manly'])))
-    images.append(create_image('dora', create_menu(['dora', 'sky'])))
+    images.append(create_image('main', create_menu(['daily', 'main', 'quasis'], _replace=('・', '\n・'))))
+    images.append(create_image('ecafe', create_menu(['dining', 'ecafe', 'rishoku', 'orange'])))
+    images.append(create_image('agre', create_menu(['agre', 'medical', 'manly', 'rantan'])))
+    images.append(create_image('dora', create_menu(['dora', 'sky', 'ajiya'])))
 except:
     log('画像の生成に失敗しました．')
     exit()
