@@ -58,7 +58,7 @@ try:
     images = []
     if today.weekday() == 5: # 土曜
         images.append(create_image('main', create_menu(['daily', 'main'], _replace=('・', '\n・'))))
-        images.append(create_image('dora', create_menu(['dora', 'sky'])))
+        # images.append(create_image('dora', create_menu(['dora', 'sky']))) # しばらく閉店の模様
     elif today.weekday() == 6: # 日曜
         images.append(create_image('main', create_menu(['main'])))
     else: # 平日
