@@ -18,7 +18,10 @@ class MenuList(TemplateView):
         context = super().get_context_data(**kwargs)
         date = datetime.datetime.strptime(self.kwargs.get('date'), "%Y-%m-%d").date() if self.kwargs.get('date') else datetime.date.today()
         weekdays = ['月', '火', '水' , '木', '金', '土', '日']
-        context['date'] = f'{date.strftime("%m月%d日")}（{weekdays[date.weekday()]}）'
+        context['date_str'] = f'{date.strftime("%m月%d日")}（{weekdays[date.weekday()]}）'
+        context['date_current'] = date.strftime('%Y-%m-%d')
+        context['date_prev'] = (date - datetime.timedelta(days=1)).strftime('%Y-%m-%d')
+        context['date_next'] = (date + datetime.timedelta(days=1)).strftime('%Y-%m-%d')
         cafeterias = []
         for cafeteria in Cafeteria.objects.all().order_by('priority'):
             menues = Menu.objects.filter(start_date__lte=date, end_date__gte=date, cafeteria=cafeteria)

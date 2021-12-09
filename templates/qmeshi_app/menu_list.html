@@ -29,7 +29,11 @@
     </div>
   </div>
 </nav>
-<h1 class="mt-4 border-bottom text-center">{{ date }}</h1>
+<h1 class="mt-4 border-bottom text-center">
+  <a class="btn btn-light" href="{% url 'qmeshi_app:menu_list' date=date_prev %}"><</a>
+  {{ date_str }}
+  <a class="btn btn-light" href="{% url 'qmeshi_app:menu_list' date=date_next %}">></a>
+</h1>
 {% for cafeteria in cafeterias %}
   <h2 id="{{ cafeteria.obj.short_name }}" class="mt-4 border-bottom text-center">{{ cafeteria.obj.name }}</h2>
   <section class="module-small">
