@@ -56,12 +56,17 @@ def create_image(name, menu_str):
 # 画像生成
 try:
     images = []
-    images.append(create_image('main', create_menu(['daily', 'main', 'quasis'], _replace=('・', '\n・'))))
-    images.append(create_image('ecafe', create_menu(['dining', 'ecafe', 'rishoku', 'orange'])))
-    images.append(create_image('agre', create_menu(['agre', 'medical', 'manly', 'rantan'])))
-    images.append(create_image('dora', create_menu(['dora', 'sky', 'ajiya'])))
+    if today.weekday() == 5: # 土曜
+        images.append(create_image('main', create_menu(['daily', 'main'], _replace=('・', '\n・'))))
+        images.append(create_image('dora', create_menu(['dora', 'sky'])))
+    elif today.weekday() == 6: # 日曜
+        images.append(create_image('main', create_menu(['main'])))
+    else: # 平日
+        images.append(create_image('main', create_menu(['daily', 'main', 'quasis'], _replace=('・', '\n・'))))
+        images.append(create_image('ecafe', create_menu(['dining', 'ecafe', 'rishoku', 'orange'])))
+        images.append(create_image('agre', create_menu(['agre', 'medical', 'manly', 'rantan'])))
+        images.append(create_image('dora', create_menu(['dora', 'sky', 'ajiya'])))
 except:
-    log('画像の生成に失敗しました．')
     exit()
 
 # ツイート
@@ -83,8 +88,6 @@ try:
             media_ids.append(res.media_id)
         _ = api.update_status(status=text, media_ids=media_ids)
 except:
-    log('ツイートに失敗しました．')
     exit()
 
-log('正常に処理が終了しました．')
 print('finished.')
