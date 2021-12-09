@@ -210,6 +210,7 @@ def manly_update():
                 Menu.objects.update_or_create(cafeteria=cafeteria, start_date=today, end_date=today, item=item)
 
 
-def delete_oldmenu():
-    Menu.objects.filter(end_date__lt=today).delete()
+def delete_oldmenu(days=7):
+    date = today - datetime.timedelta(days=days)
+    Menu.objects.filter(end_date__lt=date).delete()
     print('oldmenu deleted.')
