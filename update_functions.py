@@ -80,34 +80,32 @@ def seikyo_update(table_num:int):
     menu_df = new_menues_df[table_num]
 
     for i in menu_df:
-        if len(menu_df) < 3: # メニューがない
+        # メニューが公開されていないなら終了
+        if len(menu_df) < 3: 
             print('skipped.')
             break
-        if menu_df.isnull()[i][1] or not re.search(r'\d', menu_df[i][1]): # nanまたは数値を含まない
+        # メニューでない列（属性や金額など）はスルー
+        if menu_df.isnull()[i][1] or not re.search(r'\d', menu_df[i][1]): 
             continue
 
         try:
-            w, s_d, e_d = re.findall(r'\d*/*\d+',menu_df[i][1])
+            week_num_str, start_day_str, end_day_str = re.findall(r'\d*/*\d+', menu_df[i][1])
         except:
             continue
-        m = int(re.findall(r'\d+', menu_df[i][0])[0])
-        s_day = int(s_d.split('/')[-1])
-        e_day = int(e_d.split('/')[-1])
+        month = int(re.findall(r'\d+', menu_df[i][0])[0])
+        week_num = int(week_num_str)
+        start_day = int(start_day_str.split('/')[-1])
+        end_day = int(end_day_str.split('/')[-1])
 
-        if s_day > e_day: # 月の切り替わりあり
-            s_month = m if w != '1' else m-1 if m > 1 else 12
-            e_month = m if w == '1' else m+1 if m < 12 else 1
+        # 月の切り替わり（年の切り替わりは必ず休業なので発生しない）
+        if start_day > end_day: 
+            start_month = month-1 if week_num == 1 else month
+            end_month = month+1 if week_num >= 4 else month
         else:
-            s_month = e_month = m
+            start_month = end_month = month
 
-        if s_month > e_month : # 年の切り替わりあり
-            s_year = today.year-1 if today.month == 1 else today.year
-            e_year = today.year if today.month == 1 else today.year+1
-        else:
-            s_year = e_year = today.year
-
-        start_date = datetime.date(s_year, s_month, s_day)
-        end_date = datetime.date(e_year, e_month, e_day)
+        start_date = datetime.date(today.year, start_month, start_day)
+        end_date = datetime.date(today.year, end_month, end_day)
 
         # 更新
         for menu in menu_df[[0,i]][2:].dropna(how='any').drop_duplicates(subset=i).iterrows():
