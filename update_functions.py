@@ -1,5 +1,6 @@
 import re
 import datetime
+import unicodedata
 import os
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'qmeshi.settings')
 
@@ -53,19 +54,38 @@ def lcs(S, T):
 def flexible_get_item(tag:str, name:str):
     """誤差1文字以内ならItem取得，それ以外はItem作成"""
     tag, _ = Tag.objects.get_or_create(name=tag)
+
     try:
         item = Item.objects.get(tag=tag, name=name)
     except:
-        r_items = Item.objects.filter(tag=tag, name__startswith=name[0])
-        flag = False
-        for r_item in r_items:
-            if max(len(r_item.name), len(name))-1 <= len(lcs(r_item.name, name)): #1文字以内の誤差なら同一
-                item = r_item
-                flag = True
-                break
-        if not flag:
-            item = Item.objects.create(tag=tag, name=name)
+        candidate_items = Item.objects.filter(tag=tag, name__startswith=name[0])
+        for candidate_item in candidate_items:
+            if max(len(candidate_item.name), len(name))-1 <= len(lcs(candidate_item.name, name)): # 1文字以内の誤差なら同一アイテムとみなす
+                return candidate_item                
+        item = Item.objects.create(tag=tag, name=name)
+
     return item
+
+
+def get_char_width(c):
+    data = unicodedata.east_asian_width(c)
+    if data == 'Na' or data == 'H':
+        return 1
+    return 2
+
+
+def get_string_width(string):
+    width = 0
+    for c in string:
+        width += get_char_width(c)
+    return width
+
+
+def print_update_result(cafeteria_name, is_updated):
+    num_of_tabs = max(2 - get_string_width(cafeteria_name) // 8, 0)
+    tabs = '\t' * num_of_tabs
+    result = '\033[32mupdated.\033[0m' if is_updated else '\033[31mskipped.\033[0m'
+    print(f'{tabs}{result}')
 
 
 # 生協
@@ -73,7 +93,7 @@ def seikyo_update(table_num:int):
     cafeteria = Cafeteria.objects.get(table_num=table_num)
     print(cafeteria.name, end='\t')
     if Menu.objects.filter(end_date__gte=today, cafeteria=cafeteria).exists():
-        print('skipped.')
+        print_update_result(cafeteria.name, False)
         return
 
     new_menues_df = pd.read_html('http://www.coop.kyushu-u.ac.jp/shokudou/month_menu.html', flavor='bs4')
@@ -82,8 +102,8 @@ def seikyo_update(table_num:int):
     for i in menu_df:
         # メニューが公開されていないなら終了
         if len(menu_df) < 3: 
-            print('skipped.')
-            break
+            print_update_result(cafeteria.name, False)
+            return
         # メニューでない列（属性や金額など）はスルー
         if menu_df.isnull()[i][1] or not re.search(r'\d', menu_df[i][1]): 
             continue
@@ -113,7 +133,7 @@ def seikyo_update(table_num:int):
             tag = menu[1][0].replace(' ', '').replace('　', '')   
             Menu.objects.create(cafeteria=cafeteria, start_date=start_date, end_date=end_date, item=flexible_get_item(tag=tag, name=menu[1][i]))
     
-    print('updated.')
+    print_update_result(cafeteria.name, True)
 
 
 # 日替（生協）
@@ -121,7 +141,7 @@ def daily_update():
     cafeteria = Cafeteria.objects.get(short_name='daily')
     print(cafeteria.name, end='\t')
     if Menu.objects.filter(end_date__gte=today, cafeteria=cafeteria).exists():
-        print('skipped.')
+        print_update_result(cafeteria.name, False)
         return
 
     monday = today-datetime.timedelta(days=today.weekday())
@@ -134,7 +154,7 @@ def daily_update():
     # 日々のメニューを取得
     for index, item in dfs.iterrows():
         # 祝日と休業日はスキップ
-        if item[2][-1:]!='日' or '休業' in item[2]:
+        if item[2][-1:] == '日' or '休業' in item[2]:
             continue
 
         day = int(re.findall(r'\d+', item[0])[0])
@@ -151,7 +171,7 @@ def daily_update():
             dinner = item[5].replace(' ', '').replace('・', '\n・').strip()
             Menu.objects.create(cafeteria=cafeteria, start_date=date, end_date=date, period='夜', item=flexible_get_item(tag='定食', name=dinner))
     
-    print('updated.')
+    print_update_result(cafeteria.name, True)
 
 
 # あじや
@@ -159,7 +179,7 @@ def ajiya_update():
     cafeteria = Cafeteria.objects.get(short_name='ajiya')
     print(cafeteria.name, end='\t')
     if Menu.objects.filter(end_date__gte=today, cafeteria=cafeteria).exists():
-        print('skipped.')
+        print_update_result(cafeteria.name, False)
         return
 
     response = requests.get('http://ajiya1.com/menu/daily/', headers = {'User-Agent' : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36'})
@@ -169,7 +189,7 @@ def ajiya_update():
     item = flexible_get_item(tag='弁当', name=menu)
     Menu.objects.create(cafeteria=cafeteria, start_date=today, end_date=today, item=item)
 
-    print('updated.')
+    print_update_result(cafeteria.name, True)
 
 
 # 理食
@@ -182,7 +202,7 @@ def rishoku_update():
     for status in statuses:
         created_date = status.created_at+datetime.timedelta(hours=9) 
         if created_date.date() != today:
-            print('updated.')
+            print_update_result(cafeteria.name, True)
             break
         if not '日替わり' in status.text: # ここ表記揺れが不安
             continue
@@ -206,7 +226,7 @@ def manly_update():
     for status in statuses:
         created_date = status.created_at+datetime.timedelta(hours=9) 
         if created_date.date() != today:
-            print('updated.')
+            print_update_result(cafeteria.name, True)
             break
         if not '日替わり' in status.text:
             continue
@@ -224,4 +244,4 @@ def manly_update():
 def delete_oldmenu(days=7):
     date = today - datetime.timedelta(days=days)
     Menu.objects.filter(end_date__lt=date).delete()
-    print('oldmenu deleted.')
+    print('\033[31moldmenu deleted.\033[0m')
