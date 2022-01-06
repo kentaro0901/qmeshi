@@ -77,7 +77,7 @@ heroku open
 ## リンク
 - [管理ページ（ローカル）](http://127.0.0.1:8000/admin/)
 - [九大のメシ（ローカル）](http://127.0.0.1:8000/)
-- [管理ページ（Heroku）](qmeshi.herokuapp.com/admin/)
-- [九大のメシ（Heroku）](qmeshi.herokuapp.com/)
+- [管理ページ（Heroku）](https://qmeshi.herokuapp.com/admin/)
+- [九大のメシ（Heroku）](https://qmeshi.herokuapp.com)
 - [Django入門](https://qiita.com/kaki_k/items/511611cadac1d0c69c54)
 - [Herokuにデプロイ](https://qiita.com/frosty/items/66f5dff8fc723387108c)
