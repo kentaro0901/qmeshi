@@ -3,7 +3,7 @@ import argparse
 from update_functions import *
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-a', '--all',action='store_true')
+parser.add_argument('-a', '--all', action='store_true')
 parser.add_argument('--seikyo', action='store_true')
 parser.add_argument('--daily', action='store_true')
 parser.add_argument('--ajiya', action='store_true')

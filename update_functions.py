@@ -128,15 +128,23 @@ def daily_update():
     dfs = pd.read_html(f'http://www.coop.kyushu-u.ac.jp/teishoku{monday.strftime("%y%m%d")}.html', flavor='bs4')
     dfs = pd.concat([dfs[i][:1] for i in range(4, 10)]).reset_index().drop('index', axis=1)
 
-    m = monday.month
-    y = monday.year
-    for index, item in dfs.iterrows():
-        d = int(re.findall(r'\d+',item[0])[0])
-        m = m if d != 1 or index == 0 else m+1 if m < 12 else 1 # 月の切り替わり
-        y = y if not (m == 1 and d == 1) else y+1 # 年の切り替わり
-        date = datetime.date(y, m, d)
+    month = monday.month
+    year = monday.year
 
-        if not item.isnull()[2] and item[2][-1:]!='日':
+    # 日々のメニューを取得
+    for index, item in dfs.iterrows():
+        # 祝日と休業日はスキップ
+        if item[2][-1:]!='日' or '休業' in item[2]:
+            continue
+
+        day = int(re.findall(r'\d+', item[0])[0])
+        if day == 1: # 月の切り替わり
+            month = month+1 if month<12 else 1
+        if month == 1 and day == 1: # 年の切り替わり
+            year = year+1 
+        date = datetime.date(year, month, day)
+
+        if not item.isnull()[2]:
             lunch = item[2].replace(' ', '').replace('・', '\n・').strip()
             Menu.objects.create(cafeteria=cafeteria, start_date=date, end_date=date, period='昼', item=flexible_get_item(tag='定食', name=lunch))
         if not item.isnull()[5]:
@@ -160,6 +168,7 @@ def ajiya_update():
     menu = elems.contents[0].split()[1]
     item = flexible_get_item(tag='弁当', name=menu)
     Menu.objects.create(cafeteria=cafeteria, start_date=today, end_date=today, item=item)
+
     print('updated.')
 
 
@@ -177,6 +186,8 @@ def rishoku_update():
             break
         if not '日替わり' in status.text: # ここ表記揺れが不安
             continue
+
+        # 各メニューを取得
         for text in status.text.split():
             if '定食' in text:
                 text = text.replace('：', ':').split(':')[-1]
@@ -190,7 +201,7 @@ def manly_update():
     cafeteria = Cafeteria.objects.get(short_name='manly')
     print(cafeteria.name, end='\t')
 
-    # メモ：毎日11:00すぎにツイート
+    # メモ：毎日11:00すぎにツイートする模様
     statuses = api.user_timeline(id='kyushuManly') 
     for status in statuses:
         created_date = status.created_at+datetime.timedelta(hours=9) 
@@ -199,11 +210,13 @@ def manly_update():
             break
         if not '日替わり' in status.text:
             continue
+
+        # 各メニューを取得
         for text in status.text.split():
-            if '♕' in text: #メイン
+            if '♕' in text:
                 item = flexible_get_item(tag='メイン', name=text.replace('♕', ''))
                 Menu.objects.update_or_create(cafeteria=cafeteria, start_date=today, end_date=today, item=item)
-            if '♔' in text or '♚' in text: #プラスワンデザート
+            if '♔' in text or '♚' in text:
                 item = flexible_get_item(tag='プラスワンデザート', name=text.replace('♔', '').replace('♚', ''))
                 Menu.objects.update_or_create(cafeteria=cafeteria, start_date=today, end_date=today, item=item)
 
