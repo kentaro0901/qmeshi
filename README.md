@@ -1,7 +1,7 @@
 # 九大のメシ
 
 ## 概要
-九州大学の今日の学食メニューを一覧表示するWebアプリ「[九大のメシ](qmeshi.herokuapp.com/menues)」の中身．また，Twitterにメニューを投稿する「[九大学食bot](https://twitter.com/qu_gakushoku)」も動かしている．
+九州大学の今日の学食メニューを一覧表示するWebアプリ「九大のメシ」の中身．また，Twitterにメニューを投稿する「九大のメシbot」も動かしている．
 
 ## 特徴
 - 今日のメニューのみに絞って確認できる（公式は月間）
@@ -44,7 +44,7 @@ python manage.py test                       # テスト
 
 ## ライブラリ
 初回のみ
-`pipenv sync`で必要なものは全部入るはず
+`pipenv install`もしくは`pipenv sync`で必要なものは全部入るはず
 ```
 pipenv install django               # 本体
 pipenv install django-bootstrap5    # CSSフレームワーク
@@ -59,13 +59,18 @@ pipenv install whitenoise           # staticファイルのサポート
 ```
 brew tap heroku/brew && brew install heroku     # herokuのCLI
 heroku create [project_name]                    # プロジェクトの作成
-heroku config:set SECRET_KEY=""                 # キーを環境変数に設定
-heroku git:remote -a [project_name]             # リモートリポジトリに設定
-git push heroku master
-heroku ps:scale web=1               
-heroku run python manage.py migrate             # サーバー上でもやる必要あり
-heroku run python manage.py createsuperuser
-heroku open
+heroku config:set SECRET_KEY=""                 # djangoのシークレットキーを環境変数に設定
+heroku git:remote -a [project_name]             # リモートリポジトリに設定 自動デプロイを設定するなら不要
+git push heroku master                          # 同上
+heroku ps:scale web=1                           # スケールの設定（あまりよくわかっていない）
+heroku run python manage.py migrate             # heroku上でもマイグレーションしておく
+heroku run python manage.py createsuperuser     # heroku上でもスーパーユーザーを作成しておく
+heroku open                                     # サイトを開く
+```
+よく使うコマンド
+```
+heroku login                                    # CLIログイン
+heroku run '[command]' --app [app_name]         # コマンドの実行 ''で囲んだほうがいい？
 ```
 
 ## 開発中メモ
@@ -79,5 +84,6 @@ heroku open
 - [九大のメシ（ローカル）](http://127.0.0.1:8000/)
 - [管理ページ（Heroku）](https://qmeshi.herokuapp.com/admin/)
 - [九大のメシ（Heroku）](https://qmeshi.herokuapp.com)
+- [九大のメシbot（Twitter）](https://twitter.com/qu_gakushoku)
 - [Django入門](https://qiita.com/kaki_k/items/511611cadac1d0c69c54)
 - [Herokuにデプロイ](https://qiita.com/frosty/items/66f5dff8fc723387108c)
