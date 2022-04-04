@@ -76,8 +76,11 @@ heroku run '[command]' --app [app_name]         # コマンドの実行 ''で囲
 ## 開発中メモ
 - model.pyを編集したら`makemigrations`と`migrate`を実行
 - `pipenv install [hoge]`を実行するとPipfile（&.lock）が更新される
-  - Pipfileがある階層で`pipenv install`を実行すると全部入る（チーム開発なら`sync`）
+  - Pipfileがある階層で`pipenv install`を実行すると全部入るが，バージョンを指定していないと（多分）最新版が入るので注意
+  - チーム開発なら`sync`を使えばPipfile.lockに保存されている他の人のバージョンと同じにできるので安全
 - runserverは基本的に動かしっぱなしでいい
+- pandasのバージョンを1.4.2にするとread_htmlでエンコードエラーが出る(今は1.3.5) 原因は不明
+- ローカルファイル(update.pyなど)のimport順は決まっているため自動フォーマットをかけてはいけない
 
 ## リンク
 - [管理ページ（ローカル）](http://127.0.0.1:8000/admin/)

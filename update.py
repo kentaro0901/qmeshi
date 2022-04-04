@@ -14,7 +14,7 @@ parser.add_argument('--delete', action='store_true')
 args = parser.parse_args()
 
 if args.all:
-    for i in range(3,13):
+    for i in range(3, 13):
         seikyo_update(table_num=i)
     daily_update()
     ajiya_update()
@@ -24,7 +24,7 @@ if args.all:
 
 else:
     if args.seikyo:
-        for i in range(3,13):
+        for i in range(3, 13):
             seikyo_update(table_num=i)
     if args.daily:
         daily_update()
