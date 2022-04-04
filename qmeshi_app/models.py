@@ -1,5 +1,4 @@
 from django.db import models
-from django.core.validators import MaxValueValidator, MinValueValidator
 
 # データベース用クラス
 # パラメータの追加は慎重に（特にnon-nullableの追加時とか）
@@ -7,11 +6,10 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 # PROTECT 削除不可
 
 
-# Tagを消せば全部消える
 class Tag(models.Model):
     """種類"""
     name = models.CharField('種類', max_length=32)
-    short_name = models.CharField('略記', max_length=32, null=True) #HTMLの属性に使う
+    short_name = models.CharField('略記', max_length=32, null=True)  # HTMLの属性に使う
     priority = models.IntegerField('表示優先度', default=1)
 
     def __str__(self):
@@ -55,7 +53,6 @@ class Impression(models.Model):
     """感想"""
     item = models.ForeignKey(Item, verbose_name='アイテム', related_name='impressions', on_delete=models.CASCADE)
     comment = models.TextField('コメント', max_length=1024, blank=True)
-    #score = models.IntegerField('評価', validators=[MinValueValidator(1), MaxValueValidator(5)], default= 3)
 
     def __str__(self):
         return self.comment

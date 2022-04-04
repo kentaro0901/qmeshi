@@ -2,8 +2,8 @@ import datetime
 
 from rest_framework import viewsets
 
-from qmeshi_app.models import *
-from api.serializer import *
+from qmeshi_app.models import Item, Menu, Cafeteria
+from api.serializer import ItemSerializer, MenuSerializer, CafeteriaSerializer
 
 
 class ItemViewSet(viewsets.ModelViewSet):

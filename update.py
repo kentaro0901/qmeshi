@@ -15,7 +15,7 @@ from utils import lcs, get_string_width
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'qmeshi.settings')
 django.setup()
 
-from qmeshi_app.models import Cafeteria, Item, Menu, Tag
+from qmeshi_app.models import Cafeteria, Item, Menu, Tag  # NOQA
 
 
 def flexible_get_item(tag: str, name: str):

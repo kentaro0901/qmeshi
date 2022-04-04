@@ -151,7 +151,7 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 try:
-    from qmeshi.local_settings import *
+    from qmeshi.local_settings import *  # NOQA
 except ImportError:
     pass
 
