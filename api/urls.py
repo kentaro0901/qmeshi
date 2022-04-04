@@ -8,6 +8,6 @@ router.register('cafeterias', views.CafeteriaViewSet)
 router.register('menues', views.MenuViewSet)
 router.register('items', views.ItemViewSet)
 urlpatterns = [
-    path('test/', views.GoogleAssistant.as_view()),
+    path('assistant/', views.GoogleAssistant.as_view()),
 ]
 urlpatterns += router.urls

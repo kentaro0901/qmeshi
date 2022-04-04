@@ -1,4 +1,5 @@
 import datetime
+import json
 
 from rest_framework import viewsets
 from rest_framework.views import APIView
@@ -29,15 +30,14 @@ class CafeteriaViewSet(viewsets.ModelViewSet):
 
 
 class GoogleAssistant(APIView):
-    def get(self, request):
-        cafeteria_id = int(request.GET.get('cafeteria', 0))
+    def post(self, request):
+        cafeteria_name = json.loads(request.body).get('queryResult', dict()).get('parameters', dict()).get('cafeteria', 'main')
         today = datetime.date.today()
-        cafeteria = Cafeteria.objects.get(id=cafeteria_id)
+        cafeteria = Cafeteria.objects.get(short_name=cafeteria_name)
         menues = Menu.objects.filter(start_date__lte=today, end_date__gte=today, cafeteria=cafeteria)
         items = [menu.item.name for menu in menues]
         data = {
-            'speech': '，'.join(items),
-            'displayText': '¥n'.join(items),
-            'source': ''
+            'speech': f'今日の{cafeteria.name}のメニューは，{"，".join(items)}です．',
+            'displayText': f'今日の{cafeteria.name}のメニューは，¥n{"¥n".join(items)}¥nです．',
         }
         return Response(data)
