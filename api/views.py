@@ -37,7 +37,19 @@ class GoogleAssistant(APIView):
         menues = Menu.objects.filter(start_date__lte=today, end_date__gte=today, cafeteria=cafeteria)
         items = [menu.item.name for menu in menues]
         data = {
-            'speech': f'今日の{cafeteria.name}のメニューは，{"，".join(items)}です．',
-            'displayText': f'今日の{cafeteria.name}のメニューは，¥n{"¥n".join(items)}¥nです．',
+            "payload": {
+                "google": {
+                    "expectUserResponse": True,
+                    "richResponse": {
+                        "items": [
+                            {
+                                "simpleResponse": {
+                                    "textToSpeech": f'今日の{cafeteria.name}のメニューは，{"，".join(items)}です．'
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
         }
         return Response(data)
