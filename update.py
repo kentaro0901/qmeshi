@@ -160,7 +160,7 @@ def rishoku_update():
     print(cafeteria.name, end='\t')
 
     # メモ：毎日11:00すぎに昼定食，16:30すぎに夜定食をツイートする模様
-    statuses = api.user_timeline(user_id='bigleaf201510')
+    statuses = api.user_timeline(screen_name='bigleaf201510')
     for status in statuses:
         created_date = status.created_at.astimezone()
         if created_date.date() != today:
@@ -185,9 +185,9 @@ def manly_update():
     print(cafeteria.name, end='\t')
 
     # メモ：毎日11:00すぎにツイートする模様
-    statuses = api.user_timeline(user_id='kyushuManly')
+    statuses = api.user_timeline(screen_name='kyushuManly')
     for status in statuses:
-        created_date = status.created_at+datetime.timedelta(hours=9)
+        created_date = status.created_at.astimezone()
         if created_date.date() != today:
             print_update_result(cafeteria.name, True)
             break
