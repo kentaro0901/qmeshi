@@ -185,7 +185,7 @@ def manly_update():
     print(cafeteria.name, end='\t')
 
     # メモ：毎日11:00すぎにツイートする模様
-    statuses = api.user_timeline(screen_name='kyushuManly')
+    statuses = api.user_timeline(screen_name='KyushuManly')
     for status in statuses:
         created_date = status.created_at.astimezone()
         if created_date.date() != today:
@@ -200,9 +200,9 @@ def manly_update():
                 item = flexible_get_item(tag='メイン', name=text.replace('♕', ''))
                 Menu.objects.update_or_create(
                     cafeteria=cafeteria, start_date=today, end_date=today, item=item)
-            if '♔' in text or '♚' in text:
+            if '♔' in text or '♚' in text or '♛' in text:
                 item = flexible_get_item(
-                    tag='プラスワンデザート', name=text.replace('♔', '').replace('♚', ''))
+                    tag='プラスワンデザート', name=text.replace('♔', '').replace('♚', '').replace('♛', ''))
                 Menu.objects.update_or_create(
                     cafeteria=cafeteria, start_date=today, end_date=today, item=item)
 
