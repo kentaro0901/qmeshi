@@ -19,7 +19,7 @@ args = parser.parse_args()
 dir = os.path.dirname(os.path.abspath(__file__))
 media_dir = os.path.join(dir, 'media/tweetbot')
 ttfont_name = os.path.join(dir, 'azukiP.ttf')
-font_size = 36
+font_size = 34
 canvas_size = (900, 1600)
 background_rgb = (255, 255, 255)
 text_rgb = (0, 0, 0)
@@ -66,8 +66,8 @@ try:
     else:  # 平日
         images.append(create_image('main', create_menu(['daily', 'main', 'quasis'], _replace=('・', '\n・'))))
         images.append(create_image('ecafe', create_menu(['dining', 'ecafe', 'rishoku', 'orange'])))
-        images.append(create_image('agre', create_menu(['agre', 'medical', 'manly', 'rantan'])))
-        images.append(create_image('dora', create_menu(['dora', 'sky', 'ajiya'])))
+        images.append(create_image('agre', create_menu(['agre', 'medical', 'manly', 'rantan', 'ajiya'])))
+        images.append(create_image('dora', create_menu(['dora', 'sky'])))
 except Exception:
     exit()
 
