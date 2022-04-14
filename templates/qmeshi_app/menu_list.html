@@ -4,43 +4,18 @@
 {% block title %}九大のメシ{% endblock title %}
 
 {% block content %}
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="{% url 'qmeshi_app:menu_list' %}">九大のメシ</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            今日のメニュー
-          </a>
-          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            {% for cafeteria in cafeterias %}
-            <li><a class="dropdown-item" href="#{{ cafeteria.obj.short_name }}">{{ cafeteria.obj.name }}</a></li>
-            {% endfor %}
-          </ul>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'qmeshi_app:about' %}">このサイトについて</a>
-        </li>
-      </ul>
-    </div>
-  </div>
-</nav>
 <h1 class="mt-4 border-bottom text-center">
   <a class="btn btn-light" href="{% url 'qmeshi_app:menu_list' date=date_prev %}"><</a>
   {{ date_str }}
   <a class="btn btn-light" href="{% url 'qmeshi_app:menu_list' date=date_next %}">></a>
 </h1>
-{% for cafeteria in cafeterias %}
-  <h2 id="{{ cafeteria.obj.short_name }}" class="mt-4 border-bottom text-center">{{ cafeteria.obj.name }}</h2>
+{% for cafeteria_with_menues in cafeterias_with_menues %}
+  <h2 id="{{ cafeteria_with_menues.cafeteria.short_name }}" class="mt-4 border-bottom text-center">{{ cafeteria_with_menues.cafeteria.name }}</h2>
   <section class="module-small">
     <div class="container">
       <div class="row multi-columns-row">
         <div class="col-sm-6">
-          {% for menu in cafeteria.l_menues %}
+          {% for menu in cafeteria_with_menues.menues_left %}
           <div class="menu">
             <div class="row">
               <div class="col-sm-8">
@@ -52,7 +27,7 @@
           {% endfor %}
         </div>
         <div class="col-sm-6">
-          {% for menu in cafeteria.r_menues %}
+          {% for menu in cafeteria_with_menues.menues_right %}
           <div class="menu">
             <div class="row">
               <div class="col-sm-8">
